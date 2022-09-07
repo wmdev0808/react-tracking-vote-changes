@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { firebase } from "./firebase/firebase";
+import { firebase } from './firebase/firebase';
 
-const authenticatedUser = "Iman";
+const authenticatedUser = 'Iman';
 
 export default function App() {
   const [votes, setVotes] = useState({});
@@ -10,7 +10,7 @@ export default function App() {
 
   // Snapshot listeners to retrieve and combine the messages and votes
   useEffect(() => {
-    const messagesQuery = firebase.db.collection("messages");
+    const messagesQuery = firebase.db.collection('messages');
     const messagesSnapshot = messagesQuery.onSnapshot((snapshot) => {
       const docChanges = snapshot.docChanges();
       setVotes((oldVotes) => {
@@ -30,8 +30,8 @@ export default function App() {
     });
 
     const votesQuery = firebase.db
-      .collection("mVotes")
-      .where("voter", "==", authenticatedUser);
+      .collection('mVotes')
+      .where('voter', '==', authenticatedUser);
     const votesSnapshot = votesQuery.onSnapshot((snapshot) => {
       const docChanges = snapshot.docChanges();
       setVotes((oldVotes) => {
@@ -66,20 +66,20 @@ export default function App() {
   }, []);
 
   const upVote = (mId) => async (event) => {
-    const messageRef = firebase.db.collection("messages").doc(mId);
+    const messageRef = firebase.db.collection('messages').doc(mId);
     await firebase.db.runTransaction(async (t) => {
       const messageDoc = await t.get(messageRef);
       if (messageDoc.exists) {
         const messageData = messageDoc.data();
         const mVoteDocs = await firebase.db
-          .collection("mVotes")
-          .where("messageId", "==", mId)
-          .where("voter", "==", authenticatedUser)
+          .collection('mVotes')
+          .where('messageId', '==', mId)
+          .where('voter', '==', authenticatedUser)
           .get();
         if (mVoteDocs.docs.length > 0) {
           const voteData = mVoteDocs.docs[0].data();
           const mVoteRef = firebase.db
-            .collection("mVotes")
+            .collection('mVotes')
             .doc(mVoteDocs.docs[0].id);
           t.update(mVoteRef, {
             userVote: !voteData.userVote,
@@ -89,7 +89,7 @@ export default function App() {
             totalVotes: messageData.totalVotes + (voteData.userVote ? -1 : 1),
           });
         } else {
-          const mVoteRef = firebase.db.collection("mVotes").doc();
+          const mVoteRef = firebase.db.collection('mVotes').doc();
           t.set(mVoteRef, {
             messageId: mId,
             voter: authenticatedUser,
@@ -118,20 +118,20 @@ export default function App() {
             return (
               <li key={mId}>
                 <p>
-                  From <strong>{message.sender}</strong>, at{" "}
+                  From <strong>{message.sender}</strong>, at{' '}
                   {message.dateTime.toDate().toLocaleString()}
                 </p>
                 <p>{message.message}</p>
                 <div>
                   <button
                     style={{
-                      backgroundColor: message.userVote ? "green" : "#eeeeee",
+                      backgroundColor: message.userVote ? 'green' : '#eeeeee',
                     }}
                     onClick={upVote(mId)}
                   >
                     <span role="img" aria-label="UpVote">
-                      �
-                    </span>{" "}
+                      👍
+                    </span>{' '}
                     {message.totalVotes}
                   </button>
                 </div>
