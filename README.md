@@ -47,3 +47,5 @@ Doing so introduce additional re-render even though your current code works as e
 
 `voteChanges` totally depends on `votes` update and is also synced to `votes` changes.
 That's why we can just extract it and save it inside `ref`, resulting in avoiding unnecessary re-render.
+
+[Codesandbox Solution](https://codesandbox.io/s/react-tracking-vote-changes-forked-d18nw0?file=/src/README.md:1404-1761)
