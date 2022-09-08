@@ -34,3 +34,16 @@ useEffect(() => {
   });
 });
 ```
+
+# Answer
+
+From the performance perspective, it's not OK.
+
+## Why?
+
+Doing so introduce additional re-render even though your current code works as expected.
+
+## Solution
+
+`voteChanges` totally depends on `votes` update and is also synced to `votes` changes.
+That's why we can just extract it and save it inside `ref`, resulting in avoiding unnecessary re-render.
